@@ -13,8 +13,9 @@ class BlogPostFilter extends DataExtension {
 
 	/**
 	 * Augment queries so that we don't fetch unpublished articles.
-	**/
-	public function augmentSQL(SQLQuery &$query) {
+	 * @param SQLSelect $query
+	 */
+	public function augmentSQL(SQLSelect $query) {
 
 		if(!Permission::check("VIEW_DRAFT_CONTENT")) {
 			$stage = Versioned::current_stage();
@@ -32,8 +33,11 @@ class BlogPostFilter extends DataExtension {
 	 * means the default sort order column PublishDate causes an error.
 	 *
 	 * @see https://github.com/silverstripe/silverstripe-framework/issues/1682
-	**/
-	public function augmentLoadLazyFields(SQLQuery &$query, &$dataQuery, $parent) {
+	 * @param SQLSelect $query
+	 * @param DataQuery $dataQuery
+	 * @param $parent
+	 */
+	public function augmentLoadLazyFields(SQLSelect &$query, DataQuery &$dataQuery, $parent) {
 
 		// Ensures that we're joining the BlogPost table which holds required db fields.
 		$dataQuery->innerJoin("BlogPost", "`SiteTree`.`ID` = `BlogPost`.`ID`");
